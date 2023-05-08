@@ -4,9 +4,13 @@ Trying out SPM with an example dataset containing auditory fMRI data. Group of C
 
 Group Roles:
 CODING - Kirk & Lucy
+
 RESEARCH - Kainat
+
 MANAGEMENT - Cagla
+
 PRESENTATION / REPORT - Kainat & Cagla
+
 
 Scripts available for the following steps:
 1) REALIGNMENT
