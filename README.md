@@ -8,10 +8,15 @@ BATCH SCRIPT that calls all the other subscripts and where the amount of partici
 
 PREPROCESSING
 1. Realignment
+
 1.1. Coregistration
+
 1.2. Segmentation
+
 2. Normalization (Functional)
+
 2.1. Normalization (Structural) - optional
+
 3. Smoothing
 
 ANALYSIS
