@@ -1,5 +1,5 @@
 %% auditory fMRI (Adapted from Auditory fMRI task from SPM Manual)
-%    batch script that calls subscripts to do preprocessing and data analysis of auditory fMRI data step by step
+% batch script that calls subscripts to do preprocessing and data analysis of auditory fMRI data step by step
 
 %% SETUP
 no_runs = 1; % enter the number of runs here
@@ -7,8 +7,9 @@ no_sessions = 1; % enter the number of sessions here
 no_vp = 1; % enter the number of participants here
 
 spm('defaults', 'FMRI'); % setup spm
+spm_jobman('initcfg'); % initialize spm
 
-script_path = fullfile('/Users/Lucy/Documents/Berlin/FU/MCNB/2Semester/NMDA II/fMRI example dataset/code/'); % change to where the scripts are for you
+script_path = fullfile('/Users/Lucy/Documents/GitHub/NMDA_project/'); % change to where the scripts are for you
 datapath = fullfile('/Users/Lucy/Documents/Berlin/FU/MCNB/2Semester/NMDA II/fMRI example dataset/MoAEpilot/fM00223/'); % change to where data is for you
 
 for v = 1:no_vp
@@ -18,11 +19,16 @@ for v = 1:no_vp
 %% PREPROCESSING
 
 %% STEP 1: Realignment
-
-        realign_script = fullfile(script_path, 'realign.m');
-        realign_jobs = repmat(realign_script, 1, no_runs);
-        inputs = cell(0, no_runs);
-        spm_jobman('run', realign_jobs, inputs{:});
+        % data formatting
+        img_files = dir(fullfile(datapath,'*.img')); % get all the img files from data directory and list them
+        img_data = {}; % initialize empty array to fill with files in the right format
+        for i = 1:length(img_files) % loop over all img files
+            baseFileName = img_files(i).name; % get file name
+            fullFileName = strcat(datapath, baseFileName, ',1'); % add right format
+            img_data = [img_data fullFileName]; % add file to struct
+        end
+        final_img_data = {transpose(img_data)}; % change struct to right format
+        spm_jobman('run', fullfile(script_path, 'realign_job.m');
 
 %% STEP 1.1:  Coregistration
 
