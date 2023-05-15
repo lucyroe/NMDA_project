@@ -12,6 +12,8 @@ spm('defaults', 'FMRI'); % setup spm
 script_path = fullfile('/Users/Lucy/Documents/Berlin/FU/MCNB/2Semester/NMDA II/fMRI example dataset/code/'); % change to where the scripts are for you
 datapath = fullfile('/Users/Lucy/Documents/Berlin/FU/MCNB/2Semester/NMDA II/fMRI example dataset/MoAEpilot/fM00223/'); % change to where data is for you
 
+% random test change
+
 for v = 1:no_vp
     for s = 1:no_sessions
         for r = 1:no_runs
