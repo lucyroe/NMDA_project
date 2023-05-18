@@ -12,6 +12,25 @@ spm_jobman('initcfg'); % initialize spm
 script_path = fullfile('/Users/Lucy/Documents/GitHub/NMDA_project/'); % change to where the scripts are for you
 datapath = fullfile('/Users/Lucy/Documents/Berlin/FU/MCNB/2Semester/NMDA II/fMRI example dataset/MoAEpilot/fM00223/'); % change to where data is for you
 
+% Function Name:  get_filelist
+% Description: Find source files from data directory and compile them into a list.  Function can be used for all stages of processing,
+%   by passing the appropriate filter as an argument.
+% Arguments: filter(to find relevant file for SPM processing stage), datapath(source directory)
+% Example filters: per SPM ^r.*      ^ar.*       ^war.*      ^swar.*
+% TODO:  Confirm best filters to use, currently just using standard file search filters.
+%       Adjust code segments for each stage to use this function rather than separatly compiling file lists
+function [final_img_data] = get_filelist(filter, datapath)
+	img_files = dir(fullfile(datapath,filter)); % get all relevant files (per filter) from data directory (datapath) and list them.    
+        img_data = {};                              %  initialize empty array to fill with files in the right format
+        for i = 1:length(img_files)                 % loop over all img files
+            baseFileName = img_files(i).name; 	    % get file names
+            fullFileName = strcat(datapath, baseFileName, ',1');   % convert to correct format
+            img_data = [img_data fullFileName];                    % add file to struct
+        end
+        final_img_data = {transpose(img_data)};                    % transpose to column for use SPM functions
+end
+
+% Initialise fMRI analysis process loop over subjects, sessions, and runs.
 for v = 1:no_vp
     for s = 1:no_sessions
         for r = 1:no_runs
