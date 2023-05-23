@@ -101,6 +101,18 @@ end
 
 %% STEP 4: First level GLM
 
+%Estimate
+
+nrun = X; % enter the number of runs here
+jobfile = {'/Users/caglademirkan/Documents/MATLAB_NMDA/MoAEpilot1/output_directory/estimatee_job.m'};
+jobs = repmat(jobfile, 1, nrun);
+inputs = cell(0, nrun);
+for crun = 1:nrun
+end
+spm('defaults', 'FMRI');
+spm_jobman('run', jobs, inputs{:});
+
+
 %% STEP 5: Second level GLM
 
 %% STEP 6: Stats
