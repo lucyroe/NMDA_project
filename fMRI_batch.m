@@ -101,8 +101,7 @@ end
 
 %% STEP 4: First level GLM
 
-%Estimate
-
+%% Estimate
 nrun = X; % enter the number of runs here
 jobfile = {'/Users/caglademirkan/Documents/MATLAB_NMDA/MoAEpilot1/output_directory/estimatee_job.m'};
 jobs = repmat(jobfile, 1, nrun);
@@ -111,6 +110,18 @@ for crun = 1:nrun
 end
 spm('defaults', 'FMRI');
 spm_jobman('run', jobs, inputs{:});
+
+%% Specify
+% List of open inputs
+nrun = X; % enter the number of runs here
+jobfile = {'/Users/caglademirkan/Documents/MATLAB_NMDA/MoAEpilot1/output_directory/specify_job.m'};
+jobs = repmat(jobfile, 1, nrun);
+inputs = cell(0, nrun);
+for crun = 1:nrun
+end
+spm('defaults', 'FMRI');
+spm_jobman('run', jobs, inputs{:});
+
 
 
 %% STEP 5: Second level GLM
