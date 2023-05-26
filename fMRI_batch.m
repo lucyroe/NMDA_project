@@ -1,129 +1,78 @@
 %% auditory fMRI (Adapted from Auditory fMRI task from SPM Manual)
-% batch script that calls subscripts to do preprocessing and data analysis of auditory fMRI data step by step
+% batch script that calls functions in subscripts to do preprocessing and data analysis of auditory fMRI data step by step
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% SETUP
-no_runs = 1; % enter the number of runs here
-no_sessions = 1; % enter the number of sessions here
-no_vp = 1; % enter the number of participants here
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-spm('defaults', 'FMRI'); % setup spm
-spm_jobman('initcfg'); % initialize spm
+no_runs = 1;    % enter the number of runs here
+no_sessions = 1;    % enter the number of sessions here
+no_vp = 1;  % enter the number of participants here
 
-script_path = fullfile('/Users/Lucy/Documents/GitHub/NMDA_project/'); % change to where the scripts are for you
-datapath = fullfile('/Users/Lucy/Documents/Berlin/FU/MCNB/2Semester/NMDA II/fMRI example dataset/MoAEpilot/fM00223/'); % change to where data is for you
+script_path = fullfile('/Users/Lucy/Documents/GitHub/NMDA_project/');   % change to where the scripts are for you
+datapath = fullfile('/Users/Lucy/Documents/Berlin/FU/MCNB/2Semester/NMDA II/fMRI example dataset/MoAEpilot/');  % change to where data is for you
+spm_path = fullfile('/Users/Lucy/Documents/MATLAB/spm12');  % change to where you downloaded the spm toolbox
+addpath(script_path, datapath, spm_path)   % add script, data and spm path
 
-% Function Name:  get_filelist
-% Description: Find source files from data directory and compile them into a list.  Function can be used for all stages of processing,
-%   by passing the appropriate filter as an argument.
-% Arguments: filter(to find relevant file for SPM processing stage), datapath(source directory)
-% Example filters: per SPM ^r.*      ^ar.*       ^war.*      ^swar.*
-% TODO:  Confirm best filters to use, currently just using standard file search filters.
-%       Adjust code segments for each stage to use this function rather than separatly compiling file lists
-function [final_img_data] = get_filelist(filter, datapath)
-	img_files = dir(fullfile(datapath,filter)); % get all relevant files (per filter) from data directory (datapath) and list them.    
-        img_data = {};                              %  initialize empty array to fill with files in the right format
-        for i = 1:length(img_files)                 % loop over all img files
-            baseFileName = img_files(i).name; 	    % get file names
-            fullFileName = strcat(datapath, baseFileName, ',1');   % convert to correct format
-            img_data = [img_data fullFileName];                    % add file to struct
-        end
-        final_img_data = {transpose(img_data)};                    % transpose to column for use SPM functions
-end
+spm('defaults', 'FMRI');    % setup spm
+spm_jobman('initcfg');  % initialize spm
 
-% Initialise fMRI analysis process loop over subjects, sessions, and runs.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% PREPROCESSING
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Initialise fMRI analysis process loop over subjects, sessions, and runs
 for v = 1:no_vp
     for s = 1:no_sessions
         for r = 1:no_runs
 
-%% PREPROCESSING
-
 %% STEP 1: Realignment
-        % data formatting
-        img_files = dir(fullfile(datapath,'*.img')); % get all the img files from data directory and list them
-        img_data = {}; % initialize empty array to fill with files in the right format
-        for i = 1:length(img_files) % loop over all img files
-            baseFileName = img_files(i).name; % get file name
-            fullFileName = strcat(datapath, baseFileName, ',1'); % add right format
-            img_data = [img_data fullFileName]; % add file to struct
-        end
-        final_img_data = {transpose(img_data)}; % change struct to right format
-        spm_jobman('run', fullfile(script_path, 'realign_job.m');
+        functional_img = spm_select('FPList', fullfile(datapath,'fM00223'), '^f.*\.img$');  % select all functional images
+        structural_img = spm_select('FPList', fullfile(datapath,'sM00223'), '^s.*\.img$');  % select structural image
+        r_img = realign_job(functional_img);    % realigns the functional images using the realign_job function
 
-%% STEP 1.1:  Coregistration
+%% STEP 1.1:  Co-registration
 
-        coregister_script = fullfile(script_path, 'coregister.m');      % compose the script filename and source directory into a full filename to be used in following functions.
-        % presumably this line wont be necessary once we incorporate into a multi-session/subject/run loop. 
-        coregister_jobs = repmat(coregister_script, 1, no_runs);  % Copy the script location multiple/no_runs times into a list, this will be passed as an argument to the function spm_jobman 
-        inputs = cell(0, no_runs);                                                           % create an empty cell array of size (0 x no_runs) this will be passed as an argument to the function spm_jobman
-        spm_jobman('run', coregister_jobs, inputs{:});                    % spm_jobman() simply enables SPM to understand the "matlabbatch" jobs within the jobs file module).
+        mean_functional_img = spm_select('FPList', fullfile(datapath,'fM00223'), '^mean.*\.img$');    % select mean image file from realignment
+        c_img = coregister_job(mean_functional_img, structural_img);    % co-registrates the realigned functional image with the structural image
 
 %% STEP 1.2: Segmentation
 
-        % Code below follows the code blocks for previous preprocessing stages   (see above for comments)
-        segment_script = fullfile(script_path, 'segment.m');    
-        % presumably this line wont be necessary once we incorporate into a multi-session/subject/run loop. 
-        segment_jobs = repmat(segment_script, 1, no_runs); 
-        inputs = cell(0, no_runs);                                                      
-        spm_jobman('run', segment_jobs, inputs{:});                
+        tpm_file = spm_select('FPList', fullfile(spm_path, 'tpm'), '^T.*\.nii$');   % select tpm file
+        s_img = segment_job(structural_img, tpm_file);  % segments the structural image    
 
-%% STEP 2: Normalization (Functional)
+%% STEP 2: Normalisation (Functional)
 
-        % Code below follows the code blocks for previous preprocessing stages   (see above for comments)
-        normalise_functional_script = fullfile(script_path, 'normalise_functional.m');    
-        % presumably this line wont be necessary once we incorporate into a multi-session/subject/run loop. 
-        normalise_functional_jobs = repmat(normalise_functional_script, 1, no_runs); 
-        inputs = cell(0, no_runs);
-        spm_jobman('run', normalise_functional_jobs, inputs{:});
+        deformation_file = spm_select('FPList', fullfile(datapath,'sM00223'), '^y.*\.nii$');  % select deformation file from segmentation
+        r_files = spm_select('FPList', fullfile(datapath,'fM00223'), '^r.*\.img$'); % select realigned files from realignment
+        w_img = normalise_functional_job(deformation_file, r_files);    % normalizes realigned images
 
 %% STEP 2.1 (OPTIONAL) Normalisation (Structural)
 
-        % Code below follows the code blocks for previous preprocessing stages   (see above for comments)
-        normalise_structural_script = fullfile(script_path, 'normalise_structural.m');    
-        % presumably this line wont be necessary once we incorporate into a multi-session/subject/run loop. 
-        normalise_structural_jobs = repmat(normalise_structural_script, 1, no_runs); 
-        inputs = cell(0, no_runs);
-        spm_jobman('run', normalise_structural_jobs, inputs{:});
+        bias_file = spm_select('FPList', fullfile(datapath,'sM00223'), '^m.*\.nii$');  % select bias-corrected structural file from segmentation
+        ws_img = normalise_structural_job(deformation_file, bias_file); % normalises structural image
 
 %% STEP 3: Smoothing
 
-       % Code below follows the code blocks for previous preprocessing stages   (see above for comments)
-        smooth_script = fullfile(script_path, 'smooth.m');    
-        % presumably this line wont be necessary once we incorporate into a multi-session/subject/run loop. 
-        smooth_jobs = repmat(smooth_script, 1, no_runs); 
-        inputs = cell(0, no_runs);
-        spm_jobman('run', smooth_jobs, inputs{:});
+        wrf_images = spm_select('FPList', fullfile(datapath, 'fM00223'), '^w.*\.img$'); % select wrf images
+        sm_img = smooth_job(wrf_images); % smoothes all wrf images
 
         end
     end
 end
 
-%% ANALYSIS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% ANALYSIS - STILL NEEDS TO BE DONE (LUCY)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% STEP 4: First level GLM
+%% STEP 4.1: First level GLM - Specification
 
-%% Estimate
-nrun = X; % enter the number of runs here
-jobfile = {'/Users/caglademirkan/Documents/MATLAB_NMDA/MoAEpilot1/output_directory/estimatee_job.m'};
-jobs = repmat(jobfile, 1, nrun);
-inputs = cell(0, nrun);
-for crun = 1:nrun
-end
-spm('defaults', 'FMRI');
-spm_jobman('run', jobs, inputs{:});
+%% STEP 4.2: First level GLM - Estimation
 
-%% Specify
-% List of open inputs
-nrun = X; % enter the number of runs here
-jobfile = {'/Users/caglademirkan/Documents/MATLAB_NMDA/MoAEpilot1/output_directory/specify_job.m'};
-jobs = repmat(jobfile, 1, nrun);
-inputs = cell(0, nrun);
-for crun = 1:nrun
-end
-spm('defaults', 'FMRI');
-spm_jobman('run', jobs, inputs{:});
+%% STEP 5.1: Second level GLM - Contrasts
 
+%% STEP 5.2: Second level GLM - Inference Results
 
-
-%% STEP 5: Second level GLM
+%% STEP 5.3: Second level GLM - Rendering
 
 %% STEP 6: Stats

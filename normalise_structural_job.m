@@ -1,12 +1,30 @@
-%-----------------------------------------------------------------------
-% Job saved on 13-May-2023 21:01:53 by cfg_util (rev $Rev: 7345 $)
-% spm SPM - SPM12 (7771)
-% cfg_basicio BasicIO - Unknown
-%-----------------------------------------------------------------------
-matlabbatch{1}.spm.spatial.normalise.write.subj.def = {'C:\Users\KW\Documents\DATA\MoAEpilot\sM00223\y_sM00223_002.nii'};
-matlabbatch{1}.spm.spatial.normalise.write.subj.resample = {'C:\Users\KW\Documents\DATA\MoAEpilot\sM00223\msM00223_002.nii,1'};
-matlabbatch{1}.spm.spatial.normalise.write.woptions.bb = [-78 -112 -70
-                                                          78 76 85];
-matlabbatch{1}.spm.spatial.normalise.write.woptions.vox = [1 1 3];
-matlabbatch{1}.spm.spatial.normalise.write.woptions.interp = 4;
-matlabbatch{1}.spm.spatial.normalise.write.woptions.prefix = 'w';
+%% PREPROCESSING 
+% STEP 2.1: (OPTIONAL) Normalization (structural)
+% Function name:    normalise_structural_job
+% Description:      applies normalisation parameters to anatomical images
+% Arguments:        deformation_file (deformation info from segmentation)
+%                   bias_file (bias-corrected structural from segmentation)
+% Outputs:          spatially normalised structural file with the prefix 'ws'
+
+function [ws_img] = normalise_structural_job(deformation_file, bias_file)
+
+    clear matlabbatch   % clear matlabbatch
+    
+    matlabbatch{1}.spm.spatial.normalise.write.subj.def = cellstr(deformation_file);    % select deformation file
+    matlabbatch{1}.spm.spatial.normalise.write.subj.resample = cellstr(bias_file);  % select bias-corrected structural file
+    
+    % set parameters
+    matlabbatch{1}.spm.spatial.normalise.write.woptions.bb = [-78 -112 -70
+                                                              78 76 85];
+    matlabbatch{1}.spm.spatial.normalise.write.woptions.vox = [1 1 3];
+    matlabbatch{1}.spm.spatial.normalise.write.woptions.interp = 4;
+    matlabbatch{1}.spm.spatial.normalise.write.woptions.prefix = 'ws';
+
+    ws_img = matlabbatch;
+
+    % perform normalization
+    spm_jobman('run', ws_img);
+
+    clear matlabbatch % clear matlabbatch
+
+end
