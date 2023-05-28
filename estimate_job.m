@@ -1,22 +1,24 @@
-%% ANALYSIS - STILL NEEDS TO BE DONE (LUCY)
+%% ANALYSIS
 % STEP 4.2: First Level GLM - Estimation
 % Function name:    estimate_job
-% Description:      
-% Arguments:        
-% Outputs:          
+% Description:      Model Estimation
+% Arguments:        spm_mat1 (spm.mat file from specification)    
+% Outputs:          spm_mat2 (updated spm.mat file)
 
-function [XX] = XX(XX)
+function [spm_mat2] = estimate_job(spm_mat1)
 
     clear matlabbatch   % clear matlabbatch
     
-    matlabbatch{1}.spm.stats.fmri_est.spmmat = {'/Users/caglademirkan/Documents/MATLAB_NMDA/MoAEpilot1/SPM.mat'};
+    matlabbatch{1}.spm.stats.fmri_est.spmmat = cellstr(spm_mat1);    % select spm.mat file
+
+    % set parameters
     matlabbatch{1}.spm.stats.fmri_est.write_residuals = 0;
     matlabbatch{1}.spm.stats.fmri_est.method.Classical = 1;
 
-    XX = matlabbatch;
+    spm_mat2 = matlabbatch;
 
     % perform estimation
-    spm_jobman('run', XX);
+    spm_jobman('run', spm_mat2);
 
     clear matlabbatch % clear matlabbatch
 

@@ -62,17 +62,36 @@ for v = 1:no_vp
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% ANALYSIS - STILL NEEDS TO BE DONE (LUCY)
+%% ANALYSIS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Output Directory
+matlabbatch{1}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.parent = cellstr(datapath);   % create output directory
+matlabbatch{1}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.name = 'GLM'; % name directory 'GLM'
 
 %% STEP 4.1: First level GLM - Specification
 
+output_dir = fullfile(datapath,'GLM'); % select output directory
+swf_images = spm_select('FPList', fullfile(datapath,'fM00223'), '^swrf.*\.img$'); % select preprocessed swrf images
+spm_data = specify_job(output_dir, swf_images);    % perform specification
+
 %% STEP 4.2: First level GLM - Estimation
+
+spm_mat1 = fullfile(datapath,'GLM','SPM.mat'); % select spm.mat file from specification
+spm_mat2 = estimate_job(spm_mat1);  % perform estimation
 
 %% STEP 5.1: Second level GLM - Contrasts
 
+spm_mat = fullfile(datapath,'GLM','SPM.mat');    % select spm.mat file from estimation
+contrast_results = contrast_job(spm_mat);    % calculate contrasts defined in the job script
+
 %% STEP 5.2: Second level GLM - Inference Results
 
+inference_results = inference_job(spm_mat); % perform inference
+
 %% STEP 5.3: Second level GLM - Rendering
+
+render_file = fullfile(spm_path, 'canonical','cortex_20484.surf.gii');  % select cortex mask used for rendering from spm toolbox
+rendered_img = render_job(render_file, spm_mat);    % perform rendering
 
 %% STEP 6: Stats
