@@ -93,5 +93,3 @@ inference_results = inference_job(spm_mat); % perform inference
 
 render_file = fullfile(spm_path, 'canonical','cortex_20484.surf.gii');  % select cortex mask used for rendering from spm toolbox
 rendered_img = render_job(render_file, spm_mat);    % perform rendering
-
-%% STEP 6: Stats
