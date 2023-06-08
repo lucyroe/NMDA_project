@@ -44,7 +44,7 @@ for v = 1:no_vp
 %% STEP 2: Normalisation (Functional)
 
         deformation_file = spm_select('FPList', fullfile(datapath,'sM00223'), '^y.*\.nii$');  % select deformation file from segmentation
-        r_files = spm_select('FPList', fullfile(datapath,'fM00223'), '^r.*\.img$'); % select realigned files from realignment
+        r_files = spm_select('FPList', fullfile(datapath,'fM00223'), '^f.*\.img$'); % select realigned files from realignment
         w_img = normalise_functional_job(deformation_file, r_files);    % normalizes realigned images
 
 %% STEP 2.1 (OPTIONAL) Normalisation (Structural)

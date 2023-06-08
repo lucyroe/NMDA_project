@@ -3,7 +3,7 @@
 % Function name:    normalise_functional_job
 % Description:      normalises functional images spatially
 % Arguments:        deformation_file (deformation info from segmentation)
-%                   r_files (realigned image files with prefix 'r')
+%                   r_files (realigned functional image files)
 % Outputs:          spatially normalised files with the prefix 'w'
 
 function [w_img] = normalise_functional_job(deformation_file, r_files)
