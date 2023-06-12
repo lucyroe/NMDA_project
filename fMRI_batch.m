@@ -72,7 +72,7 @@ matlabbatch{1}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.name = 'GLM'; % name direc
 %% STEP 4.1: First level GLM - Specification
 
 output_dir = fullfile(datapath,'GLM'); % select output directory
-swf_images = spm_select('FPList', fullfile(datapath,'fM00223'), '^swrf.*\.img$'); % select preprocessed swrf images
+swf_images = spm_select('FPList', fullfile(datapath,'fM00223'), '^swf.*\.img$'); % select preprocessed swf images
 spm_data = specify_job(output_dir, swf_images);    % perform specification
 
 %% STEP 4.2: First level GLM - Estimation
