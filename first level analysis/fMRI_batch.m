@@ -9,7 +9,7 @@ no_runs = 1;    % enter the number of runs here
 no_sessions = 1;    % enter the number of sessions here
 no_vp = 1;  % enter the number of participants here
 
-script_path = fullfile('/Users/Lucy/Documents/GitHub/NMDA_project/');   % change to where the scripts are for you
+script_path = fullfile('/Users/Lucy/Documents/GitHub/NMDA_project/first level analysis/');   % change to where the scripts are for you
 datapath = fullfile('/Users/Lucy/Documents/Berlin/FU/MCNB/2Semester/NMDA II/fMRI example dataset/MoAEpilot/');  % change to where data is for you
 spm_path = fullfile('/Users/Lucy/Documents/MATLAB/spm12');  % change to where you downloaded the spm toolbox
 addpath(script_path, datapath, spm_path)   % add script, data and spm path
