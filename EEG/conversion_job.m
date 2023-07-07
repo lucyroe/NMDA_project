@@ -3,7 +3,7 @@
 % spm SPM - SPM12 (7771)
 % cfg_basicio BasicIO - Unknown
 %-----------------------------------------------------------------------
-matlabbatch{1}.spm.meeg.convert.dataset = {'/Users/caglademirkan/Documents/MATLAB_NMDA/subject1.bdf'};
+matlabbatch{1}.spm.meeg.convert.dataset = {'/Users/Lucy/Documents/Berlin/FU/MCNB/2Semester/NMDA II/EEG example dataset/subject1.bdf'};
 matlabbatch{1}.spm.meeg.convert.mode.continuous.readall = 1;
 matlabbatch{1}.spm.meeg.convert.channels{1}.chanfile = {'/Users/caglademirkan/Documents/MATLAB_NMDA/channelselection.mat'};
 matlabbatch{1}.spm.meeg.convert.outfile = '';
