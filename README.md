@@ -1,6 +1,6 @@
 # NMDA_project
 
-Trying out SPM with an example dataset containing fMRI data and another dataset containing EEG data. Group of Chagla, Kirk, Kainat and Lucy (MCNB Master Programm at FU Berlin).
+Trying out SPM with an example dataset containing fMRI data and another dataset containing EEG data. Group of Cagla, Kirk, Kainat and Lucy (MCNB Master Programm at FU Berlin).
 
 Scripts available for the following steps:
 
@@ -38,4 +38,29 @@ SECOND LEVEL ANALYSIS
 5.3. Second level GLM - Rendering
 
 
-# EEG
+# EEG - SPM
+
+BATCH SCRIPT that contains all the preprocessing steps for running them together as part of a pipeline.  
+
+Steps before preprocessing analysis:
+1. converting .bdf file to .mat file 
+2. channel selection from the data 
+3) preparing data for the montage 
+4) prepare trial definition for epoching 
+
+PREPROCESSING
+
+1. Convert
+2. Montage 
+3. Prepare
+4. Highpass filter
+5. Downsampling 
+6. Lowpass filter 
+7. Epoching 
+8. Artefacts
+9. Averaging 
+
+
+# EEG - FIELDTRIP
+
+............
