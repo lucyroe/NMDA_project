@@ -1,21 +1,24 @@
+
 % List of open inputs
-no_runs = 1;    % enter the number of runs here
+
+no_runs = 1;        % enter the number of runs here
 no_sessions = 1;    % enter the number of sessions here
-no_vp = 1;  % enter the number of participants here
+no_vp = 1;          % enter the number of participants here
 
-script_path = fullfile('/Users/Lucy/Documents/GitHub/NMDA_project/EEG/');   % change to where the scripts are for you
-datapath = fullfile('/Users/Lucy/Documents/Berlin/FU/MCNB/2Semester/NMDA II/EEG example dataset/');  % change to where data is for you
-spm_path = fullfile('/Users/Lucy/Documents/MATLAB/spm12');  % change to where you downloaded the spm toolbox
-addpath(script_path, datapath, spm_path)   % add script, data and spm path
+ % Provide the file paths 
 
-spm('defaults', 'EEG');    % setup spm
+src_path = fullfile('/Users/caglademirkan/Documents/MATLAB_NMDA/EEG_spm/'); % change to where the scripts and data are for you
+spm_path = fullfile('/Users/caglademirkan/Documents/MATLAB_NMDA/spm12');    % change to where you downloaded the spm toolbox
+addpath(src_path,spm_path) 
+
+spm('defaults', 'EEG'); % setup spm
 spm_jobman('initcfg');  % initialize spm
 
-%% The preprocessing steps can all be run together as part of a pipeline. 
+% The preprocessing steps can all be runned together as part of a pipeline.   
 
-matlabbatch{1}.spm.meeg.convert.dataset = {'/Users/Lucy/Documents/Berlin/FU/MCNB/2Semester/NMDA II/EEG example dataset/subject1.bdf'};
+matlabbatch{1}.spm.meeg.convert.dataset = {strcat(src_path,'subject1.bdf')};
 matlabbatch{1}.spm.meeg.convert.mode.continuous.readall = 1;
-matlabbatch{1}.spm.meeg.convert.channels{1}.chanfile = {'/Users/Lucy/Documents/Berlin/FU/MCNB/2Semester/NMDA II/EEG example dataset/channelselection.mat'};
+matlabbatch{1}.spm.meeg.convert.channels{1}.chanfile = {strcat(src_path,'channelselection.mat')};
 matlabbatch{1}.spm.meeg.convert.outfile = '';
 matlabbatch{1}.spm.meeg.convert.eventpadding = 0;
 matlabbatch{1}.spm.meeg.convert.blocksize = 3276800;
@@ -23,12 +26,12 @@ matlabbatch{1}.spm.meeg.convert.checkboundary = 1;
 matlabbatch{1}.spm.meeg.convert.saveorigheader = 0;
 matlabbatch{1}.spm.meeg.convert.inputformat = 'autodetect';
 matlabbatch{2}.spm.meeg.preproc.montage.D(1) = cfg_dep('Conversion: Converted Datafile', substruct('.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','Dfname'));
-matlabbatch{2}.spm.meeg.preproc.montage.mode.write.montspec.montage.montagefile = {'/Users/Lucy/Documents/Berlin/FU/MCNB/2Semester/NMDA II/EEG example dataset/avref_eog.mat'};
+matlabbatch{2}.spm.meeg.preproc.montage.mode.write.montspec.montage.montagefile = {strcat(src_path,'avref_eog.mat')};
 matlabbatch{2}.spm.meeg.preproc.montage.mode.write.montspec.montage.keepothers = 0;
 matlabbatch{2}.spm.meeg.preproc.montage.mode.write.blocksize = 655360;
 matlabbatch{2}.spm.meeg.preproc.montage.mode.write.prefix = 'M';
 matlabbatch{3}.spm.meeg.preproc.prepare.D(1) = cfg_dep('Montage: Montaged Datafile', substruct('.','val', '{}',{2}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','Dfname'));
-matlabbatch{3}.spm.meeg.preproc.prepare.task{1}.loadeegsens.eegsens = {'/Users/Lucy/Documents/Berlin/FU/MCNB/2Semester/NMDA II/EEG example dataset/sensors (1).pol'};
+matlabbatch{3}.spm.meeg.preproc.prepare.task{1}.loadeegsens.eegsens = {strcat(src_path,'sensors (1).pol')};
 matlabbatch{3}.spm.meeg.preproc.prepare.task{1}.loadeegsens.megmatch.nomatch = 1;
 matlabbatch{4}.spm.meeg.preproc.filter.D(1) = cfg_dep('Prepare: Prepared Datafile', substruct('.','val', '{}',{3}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','Dfname'));
 matlabbatch{4}.spm.meeg.preproc.filter.type = 'butterworth';
@@ -49,8 +52,9 @@ matlabbatch{6}.spm.meeg.preproc.filter.dir = 'twopass';
 matlabbatch{6}.spm.meeg.preproc.filter.order = 5;
 matlabbatch{6}.spm.meeg.preproc.filter.prefix = 'f';
 matlabbatch{7}.spm.meeg.preproc.epoch.D(1) = cfg_dep('Filter: Filtered Datafile', substruct('.','val', '{}',{6}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','Dfname'));
-matlabbatch{7}.spm.meeg.preproc.epoch.trialchoice.trlfile = {'/Users/Lucy/Documents/Berlin/FU/MCNB/2Semester/NMDA II/EEG example dataset/trialdef.mat'};
+matlabbatch{7}.spm.meeg.preproc.epoch.trialchoice.trlfile = {strcat(src_path,'trialdef.mat')};
 matlabbatch{7}.spm.meeg.preproc.epoch.bc = 1;
+matlabbatch{7}.spm
 matlabbatch{7}.spm.meeg.preproc.epoch.eventpadding = 0;
 matlabbatch{7}.spm.meeg.preproc.epoch.prefix = 'e';
 matlabbatch{8}.spm.meeg.preproc.artefact.D(1) = cfg_dep('Epoching: Epoched Datafile', substruct('.','val', '{}',{7}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','Dfname'));
@@ -70,3 +74,4 @@ matlabbatch{9}.spm.meeg.averaging.average.plv = false;
 matlabbatch{9}.spm.meeg.averaging.average.prefix = 'm';
 
 spm_jobman('run', matlabbatch);
+    
