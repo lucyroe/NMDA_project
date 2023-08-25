@@ -1,6 +1,7 @@
 # NMDA_project
 
-Trying out SPM with an example dataset containing fMRI data and another dataset containing EEG data. Group of Cagla, Kirk, Kainat and Lucy (MCNB Master Programm at FU Berlin).
+Trying out SPM with an example dataset containing fMRI data and another dataset containing EEG data. 
+Group of Cagla, Kirk, Kainat and Lucy (MCNB Master Programm at FU Berlin).
 
 Scripts available for the following steps:
 
